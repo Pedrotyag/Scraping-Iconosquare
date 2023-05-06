@@ -4,7 +4,7 @@ import app
 sched = BlockingScheduler()
 
 Hora = 20
-minutos = 42
+minutos = 44
 
 Fuso = -4
 Hora_R = Hora - Fuso
