@@ -232,7 +232,7 @@ class scraping:
                     if(Email_manager.search_link(Email_manager.links, Email_manager.list_comp)):
                         cond = False
 
-                if(time.time() - t1 >= 60*15):
+                if(time.time() - t1 >= 60*30):
                     raise
 
                 time.sleep(30)
