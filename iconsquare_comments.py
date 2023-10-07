@@ -38,7 +38,7 @@ class scraping:
             
             self.driver = driver
 
-            print(1)
+            print("Rodando no windows...")
 
         else:
 
@@ -54,7 +54,7 @@ class scraping:
 
             self.driver = webdriver.Chrome(executable_path = psw.CHROMEDRIVER_PATH, chrome_options=chrome_options)
 
-            print(2)
+            print("Rodando no linux...")
         
         return self.driver
     
@@ -80,7 +80,7 @@ class scraping:
         login = self.driver.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
 
         overview = WebDriverWait(self.driver, 60).until(
-        EC.presence_of_element_located((By.XPATH, '//h2[text()="Overview"]')))
+        EC.presence_of_element_located((By.XPATH, '//h1[text()="Hello Amom!"]')))
 
         time.sleep(5)
 
@@ -145,7 +145,7 @@ class scraping:
         self.dates = []
 
         time_wait = 2
-        for i in list_comments[:]:
+        for i in list_comments[23:]:
 
             i.click()
 
@@ -166,24 +166,32 @@ class scraping:
             subject =  self.driver.find_elements(By.XPATH, '//p[@class="break-words inline"]')
 
             self.subject_text = ''
-            for element in subject:
+            for element in subject[:]:
+
+                self.subject_text += element.text + '\n'
                 
                 try:
-                    subelement = element.find_elements(By.XPATH, './/a')
 
+                    subelement = element.find_elements(By.XPATH, './/a')
+                    if(len(subelement) == 0):
+                        raise
+                        
                     for subelement2 in subelement:
 
+                        if(str(subelement2.get_attribute("href")) == ''):
+                            raise
+
                         if('tags' in str(subelement2.get_attribute("href"))):
-                            subject_text += "#" + str(subelement2.get_attribute("href").split("/")[-1])
+                            self.subject_text += "#" + str(subelement2.get_attribute("href").split("/")[-1])
                         else:
-                            subject_text += "@" + str(subelement2.get_attribute("href").split("/")[-1])
+                            self.subject_text += str(subelement2.get_attribute("href").split("/")[-1]) + '\n'
 
                 except:
-                    self.subject_text += element.text
+
+                    pass  
 
                 self.subject_text += '\n'
             
-
             #-----------------------------------
 
             b1 = WebDriverWait(self.driver, 10).until(
@@ -266,8 +274,8 @@ class scraping:
                 # Close the file object
                 f_object.close()
 
-            if(list_comments.index(i) == 0):
-                raise
+            # if(list_comments.index(i) == 0):
+            #     raise
 
             close_1 = self.driver.find_element(By.XPATH, '//button[contains(text(), "Close")]').click()
 

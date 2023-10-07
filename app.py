@@ -22,3 +22,4 @@ def main():
 
 	time.sleep(5)
 
+main()  
